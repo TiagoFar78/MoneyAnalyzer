@@ -1,7 +1,12 @@
 package net.tiagofar78.moneyanalyzer;
 
-public class MoneyAnalyzer {
+import org.bukkit.plugin.java.JavaPlugin;
+
+public class MoneyAnalyzer extends JavaPlugin {
 	
-	
+	@Override
+	public void onEnable() {
+		
+	}
 	
 }
