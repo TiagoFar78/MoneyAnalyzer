@@ -43,7 +43,7 @@ public class AnalyzeEconomyCommand implements CommandExecutor {
 	}
 	
 	private void showEconomyDetails(CommandSender sender, EconomyDetails economyDetails) {
-		// TODO
+		// TODO faz isto
 	}
 
 	private int stringToInt(String s) {
