@@ -24,10 +24,18 @@ public class EconomyDetails {
 	}
 	
 	public void addGainedMoney(String source, double amount) {
+		if (_specificSourceGainedMoney == null) {
+			_specificSourceGainedMoney = new Hashtable<String, Double>();
+		}
+		
 		addToHashtableEntry(_specificSourceGainedMoney, source, amount);
 	}
 	
 	public void addSpentMoney(String source, double amount) {
+		if (_specificSourceSpentMoney == null) {
+			_specificSourceSpentMoney = new Hashtable<String, Double>();
+		}
+		
 		addToHashtableEntry(_specificSourceSpentMoney, source, amount);
 	}
 	
@@ -48,11 +56,11 @@ public class EconomyDetails {
 	}
 	
 	public Set<String> getGainedMoneySources() {
-		return _specificSourceGainedMoney.keySet();
+		return _specificSourceGainedMoney == null ? null : _specificSourceGainedMoney.keySet();
 	}
 	
-	public Set<String> getAverageSpentMoneyFromSource() {
-		return _specificSourceSpentMoney.keySet();
+	public Set<String> getSpentMoneySource() {
+		return _specificSourceSpentMoney == null ? null : _specificSourceSpentMoney.keySet();
 	}
 	
 	public double getAverageGainedMoney(String source) {
@@ -61,6 +69,22 @@ public class EconomyDetails {
 	
 	public double getAverageSpentMoney(String source) {
 		return _specificSourceSpentMoney.get(source) / (double)_lastDaysSearch;
+	}
+	
+	public void print() {
+		System.out.println("Total ganho: " + getAverageGainedMoney());
+		if (getGainedMoneySources() != null)
+		for (String source : getGainedMoneySources()) {
+			System.out.println(source + " " + getAverageGainedMoney(source));
+		}
+		
+		System.out.println();
+		
+		System.out.println("Total gasto: " + getAverageSpentMoney());
+		if (getSpentMoneySource() != null) 
+		for (String source : getSpentMoneySource()) {
+			System.out.println(source + " " + getAverageSpentMoney(source));
+		}
 	}
 
 }

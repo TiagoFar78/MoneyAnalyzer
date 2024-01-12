@@ -36,6 +36,10 @@ public class MoneyAnalyzer extends JavaPlugin {
 		return YamlConfiguration.loadConfiguration(configFile());
 	}
 	
+	public static YamlConfiguration getDataFile() {
+		return YamlConfiguration.loadConfiguration(dataFile());
+	}
+	
 	private static File configFile() {
 		return new File(getMoneyAnalyzer().getDataFolder(), "config.yml");
 	}
