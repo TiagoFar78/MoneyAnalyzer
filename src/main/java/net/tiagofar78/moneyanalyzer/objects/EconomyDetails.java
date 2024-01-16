@@ -47,12 +47,20 @@ public class EconomyDetails {
 		map.put(source, amount);
 	}
 	
+	public int getDays() {
+		return _lastDaysSearch;
+	}
+	
+	private double getDivisor() {
+		return _lastDaysSearch == 0 ? 1 : _lastDaysSearch;
+	}
+	
 	public double getAverageGainedMoney() {
-		return _totalGainedMoney / (double)_lastDaysSearch;
+		return _totalGainedMoney / (double)getDivisor();
 	}
 	
 	public double getAverageSpentMoney() {
-		return _totalSpentMoney / (double)_lastDaysSearch;
+		return _totalSpentMoney / (double)getDivisor();
 	}
 	
 	public Set<String> getGainedMoneySources() {
@@ -64,11 +72,11 @@ public class EconomyDetails {
 	}
 	
 	public double getAverageGainedMoney(String source) {
-		return _specificSourceGainedMoney.get(source) / (double)_lastDaysSearch;
+		return _specificSourceGainedMoney.get(source) / (double)getDivisor();
 	}
 	
 	public double getAverageSpentMoney(String source) {
-		return _specificSourceSpentMoney.get(source) / (double)_lastDaysSearch;
+		return _specificSourceSpentMoney.get(source) / (double)getDivisor();
 	}
 	
 	public void print() {

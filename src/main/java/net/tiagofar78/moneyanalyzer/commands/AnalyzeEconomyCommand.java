@@ -43,7 +43,29 @@ public class AnalyzeEconomyCommand implements CommandExecutor {
 	}
 	
 	private void showEconomyDetails(CommandSender sender, EconomyDetails economyDetails) {
-		economyDetails.print(); // TODO faz isto
+		sender.sendMessage("");
+		sender.sendMessage(">-------------------{ Economy Details }-------------------<");
+		sender.sendMessage("");
+		
+		sender.sendMessage("§aTotal gained: " + economyDetails.getAverageGainedMoney());
+		if (economyDetails.getGainedMoneySources() != null) {
+			for (String source : economyDetails.getGainedMoneySources()) {
+				sender.sendMessage(source + ": " + economyDetails.getAverageGainedMoney(source));
+			}
+		}
+
+		sender.sendMessage("");
+		
+		sender.sendMessage("§cTotal spent: " + economyDetails.getAverageSpentMoney());
+		if (economyDetails.getSpentMoneySource() != null) {
+			for (String source : economyDetails.getSpentMoneySource()) {
+				sender.sendMessage(source + ": " + economyDetails.getAverageSpentMoney(source));
+			}
+		}
+
+		sender.sendMessage("");
+		sender.sendMessage(">---------------------{ last " + economyDetails.getDays() + " days }---------------------<");
+		sender.sendMessage("");
 	}
 
 	private int stringToInt(String s) {

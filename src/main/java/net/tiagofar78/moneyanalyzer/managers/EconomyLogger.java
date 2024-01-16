@@ -1,5 +1,7 @@
 package net.tiagofar78.moneyanalyzer.managers;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -23,14 +25,11 @@ public class EconomyLogger {
 	}
 	
 	public static EconomyDetails getEconomyLogs(int lastDaysSearch) {
-		if (lastDaysSearch <= 0) {
+		if (lastDaysSearch < 0) {
 			return null;
 		}
 		
 		YamlConfiguration data = MoneyAnalyzer.getDataFile();
-		if (lastDaysSearch > data.getKeys(false).size()) {
-			return null;
-		}
 		
 		EconomyDetails details = new EconomyDetails(lastDaysSearch);
 		
@@ -38,16 +37,18 @@ public class EconomyLogger {
 		List<String> keysList = new ArrayList<String>(keys);
 		Collections.reverse(keysList);
 		
-		int daysCounted = 0;
 		for (int i = 0; i < keys.size(); i++) {
 			String key = keysList.get(i);
 			
 			if (!key.contains(".")) {
-				daysCounted++;
+				if (isOlderDate(lastDaysSearch, key)) {
+					return details;
+				}
+				
 				continue;
 			}
 			
-			if (key.lastIndexOf(".") == DATE_FORMAT.length()) {
+			if (key.lastIndexOf(".") == DATE_FORMAT.length()) {				
 				continue;
 			}
 			
@@ -67,15 +68,20 @@ public class EconomyLogger {
 					details.addSpentMoney(key.substring(DATE_FORMAT.length() + 1 + SPENT_STRING.length() + 1), data.getDouble(key));
 				}
 			}
-			
-			if (daysCounted == lastDaysSearch) {
-				break;
-			}
-			
-			daysCounted++;
 		}
 		
 		return details;
+	}
+	
+	private static boolean isOlderDate(int daysDifference, String dateString) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		LocalDate currentDate = LocalDate.parse(dateString, formatter);
+		
+		LocalDate dateLimit = LocalDate.now().minusDays(daysDifference);
+		
+		System.out.println("Vai testar se " + currentDate.toString() + " é primeiro que " + dateLimit.toString());
+		
+		return currentDate.isBefore(dateLimit);
 	}
 
 }
