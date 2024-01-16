@@ -16,11 +16,11 @@ public class EconomyDetails {
 	}
 	
 	public void addGainedMoney(double amount) {
-		_totalGainedMoney = amount;
+		_totalGainedMoney += amount;
 	}
 	
 	public void addSpentMoney(double amount) {
-		_totalSpentMoney = amount;
+		_totalSpentMoney += amount;
 	}
 	
 	public void addGainedMoney(String source, double amount) {
@@ -52,7 +52,7 @@ public class EconomyDetails {
 	}
 	
 	private double getDivisor() {
-		return _lastDaysSearch == 0 ? 1 : _lastDaysSearch;
+		return _lastDaysSearch + 1;
 	}
 	
 	public double getAverageGainedMoney() {
@@ -79,6 +79,7 @@ public class EconomyDetails {
 		return _specificSourceSpentMoney.get(source) / (double)getDivisor();
 	}
 	
+//	Debug function only
 	public void print() {
 		System.out.println("Total ganho: " + getAverageGainedMoney());
 		if (getGainedMoneySources() != null)

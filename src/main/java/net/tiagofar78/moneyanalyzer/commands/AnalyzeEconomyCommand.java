@@ -21,6 +21,10 @@ public class AnalyzeEconomyCommand implements CommandExecutor {
 		}
 		
 		if (args.length != 1) {
+//			TransactionType type = args[0].equals("s") ? TransactionType.SPENT : TransactionType.GAINED;
+//			double amount = Double.parseDouble(args[1]);
+//			String source = args.length == 2 ? null : args[2];
+//			EconomyLogger.registerMoneyTransaction(type, source, amount);
 			sender.sendMessage(config.getUsageMessage());
 			return false;
 		}
@@ -47,7 +51,8 @@ public class AnalyzeEconomyCommand implements CommandExecutor {
 		sender.sendMessage(">-------------------{ Economy Details }-------------------<");
 		sender.sendMessage("");
 		
-		sender.sendMessage("§aTotal gained: " + economyDetails.getAverageGainedMoney());
+		sender.sendMessage("§aGains:");
+		sender.sendMessage("Total: " + economyDetails.getAverageGainedMoney());
 		if (economyDetails.getGainedMoneySources() != null) {
 			for (String source : economyDetails.getGainedMoneySources()) {
 				sender.sendMessage(source + ": " + economyDetails.getAverageGainedMoney(source));
@@ -56,7 +61,8 @@ public class AnalyzeEconomyCommand implements CommandExecutor {
 
 		sender.sendMessage("");
 		
-		sender.sendMessage("§cTotal spent: " + economyDetails.getAverageSpentMoney());
+		sender.sendMessage("§cSpendings:");
+		sender.sendMessage("Total: " + economyDetails.getAverageSpentMoney());
 		if (economyDetails.getSpentMoneySource() != null) {
 			for (String source : economyDetails.getSpentMoneySource()) {
 				sender.sendMessage(source + ": " + economyDetails.getAverageSpentMoney(source));

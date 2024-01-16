@@ -15,13 +15,28 @@ import net.tiagofar78.moneyanalyzer.objects.EconomyDetails;
 
 public class EconomyLogger {
 	
-	private static final String DATE_FORMAT = "dd-mm-yyyy";
+	private static final String DATE_FORMAT = "dd-MM-yyyy";
 	private static final String GAINED_STRING = "Gained";
 	private static final String SPENT_STRING = "Spent";
 	private static final String TOTAL_STRING = "Total";
 	
 	public static void registerMoneyTransaction(TransactionType type, String source, double amount) {
+		YamlConfiguration data = MoneyAnalyzer.getDataFile();
 		
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
+		String dateString = formatter.format(LocalDate.now());
+		String typeString = type == TransactionType.GAINED ? GAINED_STRING : SPENT_STRING;
+		
+		if (source == null) {
+			source = TOTAL_STRING;
+		}
+		
+		String key = dateString + "." + typeString + "." + source;
+		
+		double currentAmount = data.getDouble(key);
+		data.set(key, currentAmount + amount);
+		
+		MoneyAnalyzer.saveFile(data, true);
 	}
 	
 	public static EconomyDetails getEconomyLogs(int lastDaysSearch) {
@@ -37,22 +52,23 @@ public class EconomyLogger {
 		List<String> keysList = new ArrayList<String>(keys);
 		Collections.reverse(keysList);
 		
-		for (int i = 0; i < keys.size(); i++) {
-			String key = keysList.get(i);
+		String oldDateString = null;
+		for (String key : keysList) {			
+			int indexOfDot = key.lastIndexOf(".");
+			if (indexOfDot == DATE_FORMAT.length() || indexOfDot == -1) {				
+				continue;
+			}
 			
-			if (!key.contains(".")) {
-				if (isOlderDate(lastDaysSearch, key)) {
+			String currentDateString = key.substring(0, DATE_FORMAT.length());
+			if (oldDateString == null || !oldDateString.equals(currentDateString)) {
+				oldDateString = currentDateString;
+				
+				if (isOlderDate(lastDaysSearch, currentDateString)) {
 					return details;
 				}
-				
-				continue;
 			}
 			
-			if (key.lastIndexOf(".") == DATE_FORMAT.length()) {				
-				continue;
-			}
-			
-			if (key.contains(GAINED_STRING)) {
+			if (key.contains(GAINED_STRING)) {		
 				if (key.contains(TOTAL_STRING)) {
 					details.addGainedMoney(data.getDouble(key));
 				}
@@ -74,12 +90,10 @@ public class EconomyLogger {
 	}
 	
 	private static boolean isOlderDate(int daysDifference, String dateString) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
 		LocalDate currentDate = LocalDate.parse(dateString, formatter);
 		
 		LocalDate dateLimit = LocalDate.now().minusDays(daysDifference);
-		
-		System.out.println("Vai testar se " + currentDate.toString() + " é primeiro que " + dateLimit.toString());
 		
 		return currentDate.isBefore(dateLimit);
 	}
