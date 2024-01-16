@@ -30,6 +30,8 @@ public class MoneyAnalyzer extends JavaPlugin {
 		}
 		
 		getCommand("AnalyzeEconomy").setExecutor(new AnalyzeEconomyCommand());
+		
+		getServer().getPluginManager().registerEvents(new Events(), this);
 	}
 	
 	public static YamlConfiguration getYamlConfiguration() {
