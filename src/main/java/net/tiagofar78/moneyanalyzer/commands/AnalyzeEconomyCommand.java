@@ -21,10 +21,6 @@ public class AnalyzeEconomyCommand implements CommandExecutor {
 		}
 		
 		if (args.length != 1) {
-//			TransactionType type = args[0].equals("s") ? TransactionType.SPENT : TransactionType.GAINED;
-//			double amount = Double.parseDouble(args[1]);
-//			String source = args.length == 2 ? null : args[2];
-//			EconomyLogger.registerMoneyTransaction(type, source, amount);
 			sender.sendMessage(config.getUsageMessage());
 			return false;
 		}
