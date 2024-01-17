@@ -1,0 +1,7 @@
+SourcesCountForTotal: false
+Messages:
+  Errors:
+    NotAllowed: "&cYou don't have permission to do that."
+    InvalidDays: "&cDays must be between 0 and the last day transactions were registered"
+  Usage:
+    AnalyzeEconomy: "&eUsage: /AnalyzeEconomy (LastXDays)"

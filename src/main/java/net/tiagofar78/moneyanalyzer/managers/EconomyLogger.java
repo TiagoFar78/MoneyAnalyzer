@@ -21,22 +21,30 @@ public class EconomyLogger {
 	private static final String TOTAL_STRING = "Total";
 	
 	public static void registerMoneyTransaction(TransactionType type, String source, double amount) {
+		ConfigManager config = ConfigManager.getInstance();
+		
 		YamlConfiguration data = MoneyAnalyzer.getDataFile();
 		
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
 		String dateString = formatter.format(LocalDate.now());
 		String typeString = type == TransactionType.GAINED ? GAINED_STRING : SPENT_STRING;
 		
-		if (source == null) {
-			source = TOTAL_STRING;
+		if (config.doSourcesCountForTotal() || source == null) {
+			writeOnFile(dateString, typeString, TOTAL_STRING, data, amount);
 		}
 		
+		if (source != null) {
+			writeOnFile(dateString, typeString, source, data, amount);
+		}
+		
+		MoneyAnalyzer.saveFile(data, true);
+	}
+	
+	private static void writeOnFile(String dateString, String typeString, String source, YamlConfiguration data, double amount) {
 		String key = dateString + "." + typeString + "." + source;
 		
 		double currentAmount = data.getDouble(key);
 		data.set(key, currentAmount + amount);
-		
-		MoneyAnalyzer.saveFile(data, true);
 	}
 	
 	public static EconomyDetails getEconomyLogs(int lastDaysSearch) {
@@ -49,8 +57,12 @@ public class EconomyLogger {
 		EconomyDetails details = new EconomyDetails(lastDaysSearch);
 		
 		Set<String> keys = data.getKeys(true);
-		List<String> keysList = new ArrayList<String>(keys);
+		List<String> keysList = new ArrayList<String>(keys);		
 		Collections.reverse(keysList);
+		
+		if (isOlderDate(lastDaysSearch, keysList.get(0).substring(0, DATE_FORMAT.length()))) {
+			return null;
+		}
 		
 		String oldDateString = null;
 		for (String key : keysList) {			
